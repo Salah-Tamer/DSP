@@ -130,4 +130,4 @@ def get_available_effects():
 
 if __name__ == "__main__":
     # Run server with Flask development server
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)
