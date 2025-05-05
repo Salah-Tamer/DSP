@@ -1,3 +1,4 @@
 venv/
 PixelFX/venv/
 __pycache__/
+.vercel

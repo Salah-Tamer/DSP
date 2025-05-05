@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "PixelFX/Server/main.py",
+      "src": "wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "PixelFX/Server/main.py"
+      "dest": "wsgi.py"
     }
   ]
 }
