@@ -17,6 +17,9 @@ app = Flask(__name__,
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 CORS(app)
 
+# Expose the Flask app for Vercel
+app = app
+
 @app.route("/", methods=["GET"])
 def get_index():
     """Render the main page of the application"""
