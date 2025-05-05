@@ -13,7 +13,7 @@ cd PixelFX
 ### 2. Create a Virtual Environment
 ```bash
 python3 -m venv venv
-source venv/bin/activate # OR FOR WINDOWS ON CMD -> venv/Scripts/activate
+source venv/bin/activate # OR FOR WINDOWS ON CMD -> venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies

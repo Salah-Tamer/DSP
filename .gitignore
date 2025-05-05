@@ -1,2 +1,3 @@
 venv/
 PixelFX/venv/
+__pycache__/
