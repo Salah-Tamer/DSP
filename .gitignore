@@ -3,3 +3,4 @@ PixelFX/venv/
 __pycache__/
 .DS_Store
 .ipynb_checkpoints
+.vercel

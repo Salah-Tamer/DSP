@@ -21,7 +21,6 @@ app = app
 
 @app.route("/", methods=["GET"])
 def get_index():
-    """Render the main page of the application"""
     return render_template("index.html")
 
 @app.route("/static/<path:path>")
@@ -49,10 +48,8 @@ def process_image_url():
         image_bytes = base64.b64decode(image_data)
         img = Image.open(io.BytesIO(image_bytes))
         
-        # For previews, resize large images to improve performance
         if is_preview:
-            # Calculate new dimensions while maintaining aspect ratio
-            max_preview_size = 800  # Maximum width or height for preview
+            max_preview_size = 800
             if img.width > max_preview_size or img.height > max_preview_size:
                 ratio = min(max_preview_size / img.width, max_preview_size / img.height)
                 new_width = int(img.width * ratio)
