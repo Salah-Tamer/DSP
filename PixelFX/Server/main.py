@@ -17,7 +17,6 @@ app = Flask(__name__,
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 CORS(app)
 
-# Expose the Flask app for Vercel
 app = app
 
 @app.route("/", methods=["GET"])
@@ -28,8 +27,6 @@ def get_index():
 @app.route("/static/<path:path>")
 def serve_static(path):
     return send_from_directory("../Client/static", path)
-
-# The /process endpoint has been removed as we now use only the /process-url endpoint
 
 @app.route('/process-url', methods=['POST'])
 def process_image_url():
@@ -132,5 +129,4 @@ def get_available_effects():
     return jsonify(available_effects)
 
 if __name__ == "__main__":
-    # Run server with Flask development server
     app.run(host="0.0.0.0", port=5002)

@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeEffectsContainer = document.getElementById('active-effects-container');
     const clearBtn = document.getElementById('clear-btn');
 
-    // Mapping of effects to their corresponding icons
     const effectIcons = {
         'blur': 'droplet',
         'brightness': 'sun',
@@ -14,16 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
         'grayscale': 'eye'
     };
 
-    // Event listeners for effect toggles
     effectToggles.forEach(toggle => {
         toggle.addEventListener('change', function() {
             const effectId = this.id.replace('-toggle', '');
             const slider = document.getElementById(`${effectId}-slider`);
             
             if (this.checked) {
-                // Enable slider when effect is toggled on
                 slider.disabled = false;
-                // Add to active effects
                 addToActiveEffects(effectId);
             } else {
                 // Disable slider when effect is toggled off
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Event listeners for effect sliders
     effectSliders.forEach(slider => {
         slider.addEventListener('input', function() {
             const effectId = this.id.replace('-slider', '');
@@ -45,22 +40,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Clear all effects
     clearBtn.addEventListener('click', clearAllEffects);
 
-    // Add effect to active effects tab
     function addToActiveEffects(effectId) {
         const slider = document.getElementById(`${effectId}-slider`);
         const value = slider.value;
         const displayName = effectId.charAt(0).toUpperCase() + effectId.slice(1);
         const icon = effectIcons[effectId] || 'sliders';
         
-        // Check if this effect is already in active effects
         if (document.getElementById(`active-${effectId}`)) {
             return;
         }
         
-        // Create active effect element
         const activeEffect = document.createElement('div');
         activeEffect.id = `active-${effectId}`;
         activeEffect.className = 'active-effect';
@@ -76,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                    value="${value}" data-effect="${effectId}">
         `;
         
-        // Clear "No active effects" message if it exists
         const noEffectsMsg = activeEffectsContainer.querySelector('p');
         if (noEffectsMsg) {
             activeEffectsContainer.removeChild(noEffectsMsg);
@@ -88,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize feather icons
         feather.replace();
         
-        // Add event listeners for the active effect
         const removeBtn = activeEffect.querySelector('.remove-effect');
         removeBtn.addEventListener('click', function() {
             const effectId = this.getAttribute('data-effect');
@@ -110,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Remove effect from active effects tab
     function removeFromActiveEffects(effectId) {
         const activeEffect = document.getElementById(`active-${effectId}`);
         if (activeEffect) {
@@ -126,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update the value of an active effect
     function updateActiveEffectValue(effectId, value) {
         const activeSlider = document.querySelector(`.active-effect-slider[data-effect="${effectId}"]`);
         if (activeSlider) {
@@ -134,13 +121,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update the active effects count badge
     function updateActiveCount() {
         const activeCount = document.querySelectorAll('.effect-toggle:checked').length;
         activeCountBadge.textContent = activeCount;
     }
 
-    // Get default value for an effect slider
     function getDefaultValue(effectId) {
         switch(effectId) {
             case 'blur':
@@ -156,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Get active effects with their values
     window.getActiveEffects = function() {
         const activeEffects = [];
         
@@ -175,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return activeEffects;
     };
 
-    // Clear all effects
     window.clearAllEffects = function() {
         effectToggles.forEach(toggle => {
             toggle.checked = false;
@@ -189,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear active effects
         activeEffectsContainer.innerHTML = '<p class="text-center text-muted my-4">No active effects</p>';
         
-        // Update count
         updateActiveCount();
     };
 });

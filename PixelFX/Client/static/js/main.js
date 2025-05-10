@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Feather icons
     feather.replace();
 
-    // Elements
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('image-upload');
     const originalImage = document.getElementById('original-image');
@@ -17,21 +15,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeEffectsContainer = document.getElementById('active-effects-container');
     const activeCountBadge = document.getElementById('active-count');
 
-    // Global variables
     let availableEffects = {};
     let activeEffects = [];
     let originalImageFile = null;
-    let originalImageUrl = null; // Store the base64 URL of the original image
+    let originalImageUrl = null;
     let processedImageData = null;
     let previewTimeout = null;
 
-    // Load available effects on page load
     loadAvailableEffects();
 
-    // Event Listeners
     uploadBtn.addEventListener('click', () => fileInput.click());
     
-    // Add hero button upload functionality
     const uploadHeroBtn = document.getElementById('upload-hero-btn');
     if (uploadHeroBtn) {
         uploadHeroBtn.addEventListener('click', () => fileInput.click());
@@ -42,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     applyBtn.addEventListener('click', applyEffects);
     clearBtn.addEventListener('click', clearAllEffects);
     
-    // Listen for clicks on single effect apply buttons (delegated event)
     effectsList.addEventListener('click', function(e) {
         if (e.target.classList.contains('apply-single-effect') || 
             e.target.closest('.apply-single-effect')) {
@@ -53,27 +46,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Add drag and drop functionality for image upload
     const dropZones = [document.getElementById('upload-placeholder'), document.getElementById('original-image')];
     
     dropZones.forEach(zone => {
         if (zone) {
-            // Prevent default behavior for these events
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 zone.addEventListener(eventName, preventDefaults, false);
             });
             
-            // Highlight drop zone on drag enter/over
             ['dragenter', 'dragover'].forEach(eventName => {
                 zone.addEventListener(eventName, highlight, false);
             });
             
-            // Remove highlight on drag leave/drop
             ['dragleave', 'drop'].forEach(eventName => {
                 zone.addEventListener(eventName, unhighlight, false);
             });
             
-            // Handle dropped files
             zone.addEventListener('drop', handleDrop, false);
         }
     });
@@ -101,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Debounce function for preview updates
     function debounce(func, delay) {
         return function() {
             const context = this;
@@ -111,10 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // Debounced preview function with 300ms delay
     const debouncedPreview = debounce(previewEffects, 300);
 
-    // Fetch available effects from the server
     async function loadAvailableEffects() {
         try {
             showLoading();
@@ -132,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Render the list of available effects
     function renderEffectsList() {
         effectsList.innerHTML = '';
         
@@ -140,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const effectCol = document.createElement('div');
             effectCol.className = 'col';
             
-            // Create effect card with toggle and hidden details
             effectCol.innerHTML = `
                 <input type="checkbox" id="${effectId}-toggle" class="effect-toggle d-none" data-effect="${effectId}" disabled>
                 <label for="${effectId}-toggle" class="effect-card">
@@ -188,55 +171,45 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
 
-    // Handle effect toggle change
     function handleEffectToggle(toggleElement) {
         const effectId = toggleElement.dataset.effect;
         const isActive = toggleElement.checked;
         
-        // Show/hide controls
         const controlsDiv = document.getElementById(`${effectId}-controls`);
         if (controlsDiv) {
             controlsDiv.style.display = isActive ? 'block' : 'none';
         }
         
-        // Enable/disable sliders for this effect
         const sliders = document.querySelectorAll(`.param-slider[data-effect="${effectId}"]`);
         sliders.forEach(slider => {
             slider.disabled = !isActive;
         });
         
         if (isActive) {
-            // Add effect to active effects
             addToActiveEffects(effectId);
         } else {
-            // Remove effect from active effects
             removeFromActiveEffects(effectId);
         }
         
         updateActiveCount();
     }
 
-    // Handle parameter slider change
     function handleParamChange(sliderElement) {
         const effectId = sliderElement.dataset.effect;
         const paramId = sliderElement.dataset.param;
         const value = parseFloat(sliderElement.value);
         
-        // Update value display
         const valueDisplay = document.getElementById(`${effectId}-${paramId}-value`);
         if (valueDisplay) {
             valueDisplay.textContent = value;
         }
         
-        // Update the active effect parameter value
         updateActiveEffectParam(effectId, paramId, value);
         
-        // Update the active effect slider and its value display if visible
         const activeSlider = document.querySelector(`.active-param-slider[data-effect="${effectId}"][data-param="${paramId}"]`);
         if (activeSlider) {
             activeSlider.value = value;
             
-            // Update active effect value display
             const activeValueDisplay = document.getElementById(`active-${effectId}-${paramId}-value`);
             if (activeValueDisplay) {
                 activeValueDisplay.textContent = value;
@@ -244,31 +217,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Add effect to active effects
     function addToActiveEffects(effectId) {
         if (!availableEffects[effectId]) return;
         
-        // Check if this effect is already in active effects
         const existingIndex = activeEffects.findIndex(e => e.id === effectId);
         if (existingIndex >= 0) return;
         
-        // Create new active effect object
         const effectInfo = availableEffects[effectId];
         const newEffect = {
             id: effectId,
             params: {}
         };
         
-        // Initialize params with default values
         effectInfo.params.forEach(param => {
             const slider = document.querySelector(`.param-slider[data-effect="${effectId}"][data-param="${param.id}"]`);
             newEffect.params[param.id] = slider ? parseFloat(slider.value) : param.default;
         });
         
-        // Add to active effects array
         activeEffects.push(newEffect);
         
-        // Create active effect UI element
         const activeEffect = document.createElement('div');
         activeEffect.className = 'card mb-3 active-effect';
         activeEffect.dataset.effect = effectId;
@@ -305,18 +272,14 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Clear "No active effects" message if present
         if (activeEffectsContainer.querySelector('p.text-muted')) {
             activeEffectsContainer.innerHTML = '';
         }
         
-        // Add to container
         activeEffectsContainer.appendChild(activeEffect);
         
-        // Initialize feather icons
         feather.replace();
         
-        // Add event listeners
         const removeBtn = activeEffect.querySelector('.remove-effect');
         removeBtn.addEventListener('click', function() {
             const effectId = this.dataset.effect;
@@ -326,7 +289,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updateActiveCount();
         });
         
-        // Add event listeners to active sliders
         const activeSliders = activeEffect.querySelectorAll('.active-param-slider');
         activeSliders.forEach(slider => {
             slider.addEventListener('input', function() {
@@ -334,56 +296,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 const paramId = this.dataset.param;
                 const value = parseFloat(this.value);
                 
-                // Update active value display
                 const activeValueDisplay = document.getElementById(`active-${effectId}-${paramId}-value`);
                 if (activeValueDisplay) {
                     activeValueDisplay.textContent = value;
                 }
                 
-                // Update main slider and its value display
                 const mainSlider = document.querySelector(`.param-slider[data-effect="${effectId}"][data-param="${paramId}"]`);
                 if (mainSlider) {
                     mainSlider.value = value;
                     
-                    // Update main value display
                     const mainValueDisplay = document.getElementById(`${effectId}-${paramId}-value`);
                     if (mainValueDisplay) {
                         mainValueDisplay.textContent = value;
                     }
                 }
                 
-                // Update active effect param
                 updateActiveEffectParam(effectId, paramId, value);
             });
         });
         
-        // Update preview if an image is loaded
         if (originalImageFile) {
             previewEffects();
         }
     }
 
-    // Remove effect from active effects
     function removeFromActiveEffects(effectId) {
-        // Remove from array
         const index = activeEffects.findIndex(e => e.id === effectId);
         if (index >= 0) {
             activeEffects.splice(index, 1);
         }
         
-        // Remove from UI
         const activeEffect = activeEffectsContainer.querySelector(`.active-effect[data-effect="${effectId}"]`);
         if (activeEffect) {
             activeEffectsContainer.removeChild(activeEffect);
         }
         
-        // Show "No active effects" message if no effects are active
         if (activeEffects.length === 0) {
             activeEffectsContainer.innerHTML = '<p class="text-center text-muted my-4">No active effects</p>';
             
-            // Reset processed image preview to original if all effects are removed
             if (originalImageFile) {
-                // Set processed image back to original
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     processedImage.src = e.target.result;
@@ -393,39 +344,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 reader.readAsDataURL(originalImageFile);
             }
         } else if (originalImageFile) {
-            // Update preview with remaining effects
             previewEffects();
         }
     }
 
-    // Update active effect parameter value
     function updateActiveEffectParam(effectId, paramId, value) {
         const effectIndex = activeEffects.findIndex(e => e.id === effectId);
         if (effectIndex >= 0) {
             activeEffects[effectIndex].params[paramId] = value;
-            // Real-time preview update
             debouncedPreview();
         }
     }
     
-    // Preview effects without applying permanently
     async function previewEffects() {
         if (!originalImageFile || activeEffects.length === 0 || !originalImageUrl) {
             return;
         }
         
-        // Show a subtle loading indication for preview
         processedImage.style.opacity = "0.7";
         
         try {
-            // Send the image as base64 URL for better performance during previews
             const requestData = {
                 imageUrl: originalImageUrl,
                 effects: activeEffects,
                 preview: true
             };
             
-            // Send to server for processing
             const response = await fetch('/process-url', {
                 method: 'POST',
                 headers: {
@@ -440,59 +384,45 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const data = await response.json();
             
-            // Display processed image preview
             processedImage.src = `data:image/jpeg;base64,${data.image}`;
             processedImage.style.display = 'block';
             effectPlaceholder.style.display = 'none';
             
-            // We don't enable download yet as this is just a preview
-            // Download is enabled only after applying effects
         } catch (error) {
             console.error('Error processing image preview:', error);
-            // Don't show alert for preview errors to avoid interrupting the user experience
         } finally {
-            // Reset opacity
             processedImage.style.opacity = "1";
         }
     }
 
-    // Update active effects count
     function updateActiveCount() {
         activeCountBadge.textContent = activeEffects.length;
     }
 
-    // Handle image upload
     function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
         
         originalImageFile = file;
         
-        // Display original image
         const reader = new FileReader();
         reader.onload = function(e) {
-            // Save the base64 URL for faster processing
             originalImageUrl = e.target.result;
             
-            // Set original image
             originalImage.src = originalImageUrl;
             originalImage.style.display = 'block';
             uploadPlaceholder.style.display = 'none';
             
-            // Set processed image to same as original initially
             processedImage.src = originalImageUrl;
             processedImage.style.display = 'block';
             effectPlaceholder.style.display = 'none';
             
-            // Enable effect toggles
             document.querySelectorAll('.effect-toggle').forEach(toggle => {
                 toggle.disabled = false;
             });
             
-            // Only enable download after applying
             downloadBtn.disabled = true;
             
-            // If there are active effects, immediately preview them
             if (activeEffects.length > 0) {
                 previewEffects();
             }
@@ -500,14 +430,12 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsDataURL(file);
     }
 
-    // Apply a single effect to the image
     async function applySingleEffect(effectId) {
         if (!originalImageFile) {
             alert('Please upload an image first');
             return;
         }
         
-        // Find effect in active effects
         const effectIndex = activeEffects.findIndex(e => e.id === effectId);
         if (effectIndex < 0) {
             alert('Effect not active. Please enable the effect first.');
@@ -517,17 +445,14 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading();
         
         try {
-            // Get just this one effect
             const singleEffect = [activeEffects[effectIndex]];
             
-            // Create request data
             const requestData = {
                 imageUrl: originalImageUrl,
                 effects: singleEffect,
                 preview: false
             };
             
-            // Send to server for processing
             const response = await fetch('/process-url', {
                 method: 'POST',
                 headers: {
@@ -543,15 +468,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             processedImageData = data.image;
             
-            // Display processed image
             processedImage.src = `data:image/png;base64,${processedImageData}`;
             processedImage.style.display = 'block';
             effectPlaceholder.style.display = 'none';
             
-            // Enable download button
             downloadBtn.disabled = false;
             
-            // Show success message
             alert(`${availableEffects[effectId].name} effect applied successfully!`);
         } catch (error) {
             console.error('Error applying single effect:', error);
@@ -561,7 +483,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Apply all effects to image
     async function applyEffects() {
         if (!originalImageFile) {
             alert('Please upload an image first');
@@ -576,14 +497,12 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading();
         
         try {
-            // Use the URL-based API for faster processing
             const requestData = {
                 imageUrl: originalImageUrl,
                 effects: activeEffects,
                 preview: false
             };
             
-            // Send to server for processing
             const response = await fetch('/process-url', {
                 method: 'POST',
                 headers: {
@@ -599,12 +518,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             processedImageData = data.image;
             
-            // Display processed image
             processedImage.src = `data:image/png;base64,${processedImageData}`;
             processedImage.style.display = 'block';
             effectPlaceholder.style.display = 'none';
             
-            // Enable download button
             downloadBtn.disabled = false;
         } catch (error) {
             console.error('Error processing image:', error);
@@ -614,14 +531,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Download processed image
     function downloadProcessedImage() {
         if (!processedImageData) {
             alert('No processed image to download');
             return;
         }
         
-        // Create download link
         const link = document.createElement('a');
         link.href = `data:image/png;base64,${processedImageData}`;
         link.download = 'edited_image.png';
@@ -630,16 +545,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.removeChild(link);
     }
 
-    // Clear all effects
     function clearAllEffects() {
-        // Uncheck all effect toggles
         document.querySelectorAll('.effect-toggle').forEach(toggle => {
             toggle.checked = false;
             
-            // Disable sliders
             const effectId = toggle.dataset.effect;
             
-            // Hide controls for this effect
             const controlsDiv = document.getElementById(`${effectId}-controls`);
             if (controlsDiv) {
                 controlsDiv.style.display = 'none';
@@ -649,7 +560,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sliders.forEach(slider => {
                 slider.disabled = true;
                 
-                // Reset to default value
                 const paramId = slider.dataset.param;
                 const effectInfo = availableEffects[effectId];
                 const paramInfo = effectInfo.params.find(p => p.id === paramId);
@@ -659,16 +569,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Clear active effects
         activeEffects = [];
         activeEffectsContainer.innerHTML = '<p class="text-center text-muted my-4">No active effects</p>';
         
-        // Update count
         updateActiveCount();
         
-        // Reset preview image to original if an image is uploaded
         if (originalImageFile) {
-            // Set processed image back to original
             const reader = new FileReader();
             reader.onload = function(e) {
                 processedImage.src = e.target.result;
@@ -677,13 +583,11 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             reader.readAsDataURL(originalImageFile);
             
-            // Disable download until effects are applied
             downloadBtn.disabled = true;
             processedImageData = null;
         }
     }
 
-    // Helper Functions
     function showLoading() {
         loadingOverlay.classList.remove('d-none');
     }
@@ -692,7 +596,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingOverlay.classList.add('d-none');
     }
 
-    // Initialize Bootstrap tabs
     function initializeTabs() {
         const triggerTabList = Array.from(document.querySelectorAll('#effects-tabs a'));
         triggerTabList.forEach(triggerEl => {
@@ -704,6 +607,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Initialize
     initializeTabs();
 });
