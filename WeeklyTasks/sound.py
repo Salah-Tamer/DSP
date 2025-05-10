@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 
-file_path = r"C:\Users\CRIZMA MEGA STORE\Downloads\60s-rock-beat-music-loop-120-bpm.wav/60s-rock-beat-music-loop-120-bpm.wav.wav"
+file_path = r"60s-rock-beat-music-loop-120-bpm.wav.wav"
 
 
 
