@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 # List of available effects
-EFFECTS = ['blur', 'brightness', 'contrast', 'grayscale', 'salt_pepper']
+EFFECTS = ['blur', 'brightness', 'grayscale', 'salt_pepper']
 
 def apply_blur(image, params=None):
     """Apply blur effect to image"""
@@ -20,15 +20,6 @@ def apply_brightness(image, params=None):
     
     factor = params.get('factor', 1.0)
     enhancer = ImageEnhance.Brightness(image)
-    return enhancer.enhance(factor)
-
-def apply_contrast(image, params=None):
-    """Apply contrast effect to image"""
-    if params is None:
-        params = {'factor': 1.0}
-    
-    factor = params.get('factor', 1.0)
-    enhancer = ImageEnhance.Contrast(image)
     return enhancer.enhance(factor)
 
 def apply_grayscale(image, params=None):
@@ -153,7 +144,6 @@ def apply_effect(image, effect_id, params=None):
     effect_functions = {
         'blur': apply_blur,
         'brightness': apply_brightness,
-        'contrast': apply_contrast,
         'grayscale': apply_grayscale,
         'salt_pepper': apply_salt_pepper
     }

@@ -100,13 +100,6 @@ def get_available_effects():
                 {'id': 'factor', 'name': 'Factor', 'type': 'slider', 'min': 0, 'max': 2, 'step': 0.1, 'default': 1.0}
             ]
         },
-        'contrast': {
-            'name': 'Contrast',
-            'description': 'Adjust image contrast',
-            'params': [
-                {'id': 'factor', 'name': 'Factor', 'type': 'slider', 'min': 0, 'max': 2, 'step': 0.1, 'default': 1.0}
-            ]
-        },
         'grayscale': {
             'name': 'Grayscale',
             'description': 'Convert image to grayscale',
