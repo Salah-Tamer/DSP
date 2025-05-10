@@ -3,7 +3,7 @@ import numpy as np
 
 
 
-image = cv2.imread('C:\\Users\CRIZMA MEGA STORE\Downloads\cat graphic/bright-day.jpg')
+image = cv2.imread('bright-day.jpg')
 
 
 cv2.imshow('Original Image', image)
