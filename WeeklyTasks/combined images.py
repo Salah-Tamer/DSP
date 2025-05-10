@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-image = cv2.imread('C:\\Users\CRIZMA MEGA STORE\Downloads\cat graphic/moon_PNG20.png')
+image = cv2.imread('moon_PNG20.png')
 
 
 new_width, new_height = 400, 400
