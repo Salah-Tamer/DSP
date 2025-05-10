@@ -7,7 +7,6 @@ import os
 import sys
 from PIL import Image
 
-# Add the current directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from effects import apply_effect, EFFECTS
 
@@ -110,6 +109,13 @@ def get_available_effects():
             'params': [
                 {'id': 'noise_level', 'name': 'Noise Level', 'type': 'slider', 'min': 0, 'max': 0.1, 'step': 0.001, 'default': 0.02},
                 {'id': 'block_size', 'name': 'Block Size', 'type': 'slider', 'min': 1, 'max': 5, 'step': 1, 'default': 1}
+            ]
+        },
+        'noise_removal': {
+            'name': 'Noise Removal',
+            'description': 'Remove noise from image',
+            'params': [
+                {'id': 'strength', 'name': 'Strength', 'type': 'slider', 'min': 1, 'max': 10, 'step': 1, 'default': 3}
             ]
         }
     }

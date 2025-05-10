@@ -2,7 +2,7 @@ from PIL import Image, ImageFilter, ImageEnhance, ImageOps
 import numpy as np
 import random
 
-EFFECTS = ['blur', 'brightness', 'grayscale', 'salt_pepper']
+EFFECTS = ['blur', 'brightness', 'grayscale', 'salt_pepper', 'noise_removal']
 
 def apply_blur(image, params=None):
     if params is None:
@@ -117,13 +117,22 @@ def apply_salt_pepper(image, params=None):
                         img_array[r, c] = value
         
         return Image.fromarray(img_array if len(img_array.shape) == 2 else img_array.astype('uint8'))
+    
+def apply_noise_removal(image, params=None):
+    if params is None:
+        params = {'strength': 3}
+    
+    strength = params.get('strength', 3)
+    kernel_size = max(3, min(9, 2 * strength + 1))
+    return image.filter(ImageFilter.MedianFilter(size=kernel_size))
 
 def apply_effect(image, effect_id, params=None):
     effect_functions = {
         'blur': apply_blur,
         'brightness': apply_brightness,
         'grayscale': apply_grayscale,
-        'salt_pepper': apply_salt_pepper
+        'salt_pepper': apply_salt_pepper,
+        'noise_removal': apply_noise_removal
     }
     
     if effect_id in effect_functions:
