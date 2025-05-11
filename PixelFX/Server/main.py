@@ -117,6 +117,13 @@ def get_available_effects():
             'params': [
                 {'id': 'strength', 'name': 'Strength', 'type': 'slider', 'min': 1, 'max': 10, 'step': 1, 'default': 3}
             ]
+        },
+        'invert': {
+            'name': 'Invert Colors',
+            'description': 'Invert the colors of the image',
+            'params': [
+                {'id': 'factor', 'name': 'Factor', 'type': 'slider', 'min': 0, 'max': 1, 'step': 0.1, 'default': 1.0}
+            ]
         }
     }
     
